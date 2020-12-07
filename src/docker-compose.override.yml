@@ -7,6 +7,12 @@ services:
     ports:
       - "80"
 
+  risk.visualizer:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "80"
+
   risk.sampleclient:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development

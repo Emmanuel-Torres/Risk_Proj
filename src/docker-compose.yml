@@ -17,6 +17,22 @@ services:
     networks:
       risknet:
 
+  risk.visualizer:
+    hostname: risk.visualizer
+    image: ${DOCKER_REGISTRY-}riskvisualizer
+    build:
+      context: .
+      dockerfile: Risk.Visualizer/Dockerfile
+    ports:
+    - "3000:80"
+    environment:
+    - ServerName=http://risk.api
+    - secretCode=banana
+    networks:
+      risknet:
+    depends_on:
+    - risk.api
+
   risk.sampleclient:
     hostname: risk.sampleclient
     image: ${DOCKER_REGISTRY-}risksampleclient
