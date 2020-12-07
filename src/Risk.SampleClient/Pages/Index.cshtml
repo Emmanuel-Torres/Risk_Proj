@@ -41,6 +41,13 @@
     </form>
 }
 
+@if(Model.Status.GameState == Risk.Shared.GameState.GameOver)
+{
+    <form method="post" asp-page-handler="RestartGame">
+        <button type="submit">Restart Game</button>
+    </form>
+}
+
 <div class="playerStats">
     <table cellpadding="2px, 10px">
         <thead>

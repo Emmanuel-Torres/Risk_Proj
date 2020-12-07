@@ -46,5 +46,27 @@ namespace Risk.SampleClient.Pages
             );            
             return new RedirectToPageResult("Index");
         }
+        public async Task<IActionResult> OnPostRestartGameAsync()
+        {
+            Status = await httpClientFactory
+                .CreateClient()
+                .GetFromJsonAsync<GameStatus>($"{configuration["GameServer"]}/status");
+
+            var client = httpClientFactory.CreateClient();
+            var response = await client.PostAsJsonAsync($"{configuration["GameServer"]}/restartgame", new RestartGameRequest { RestartGame = true, GameState = Status.GameState });
+
+            //add code here that receives the response from the previous line, and then send a request to start the game.
+            if (response.IsSuccessStatusCode)
+            {
+                Task.Run(() =>
+                client.PostAsJsonAsync($"{configuration["GameServer"]}/startgame", new StartGameRequest { SecretCode = configuration["secretCode"] }));
+            }
+            else
+            {
+                throw new Exception("Cannot restart game");
+            }
+
+            return new RedirectToPageResult("Index");
+        }
     }
 }

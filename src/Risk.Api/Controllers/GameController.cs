@@ -118,17 +118,21 @@ namespace Risk.Api.Controllers
         }
 
         [HttpPost("[action]")]
-        public IActionResult RestartGame(StartGameRequest startGameRequest)
+        public IActionResult RestartGame(RestartGameRequest restartGameRequest)
         {
-            game = InitializeGame(int.Parse(config["height"] ?? "5"),
-                int.Parse(config["width"] ?? "5"),
-                int.Parse(config["startingArmies"] ?? "5"));
-            foreach(var player in initialPlayers)
+            if (restartGameRequest.RestartGame == true && restartGameRequest.GameState == GameState.GameOver)
             {
-                game.AddPlayer(player);
+                game = InitializeGame(int.Parse(config["height"] ?? "5"),
+                    int.Parse(config["width"] ?? "5"),
+                    int.Parse(config["startingArmies"] ?? "5"));
+                foreach (var player in initialPlayers)
+                {
+                    game.AddPlayer(player);
+                }
+                return Ok();
             }
 
-            return Ok();
+            return BadRequest("We cannot restart the game.");
         }
     }
 }

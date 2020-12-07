@@ -132,7 +132,7 @@ namespace Rusty_Client.Controllers
                             defenderLocation.Column = i;
                             defenderLocation.Row = j;
                             temp = beginAttackRequest.Board.FirstOrDefault(d => d.Location == defenderLocation);
-                            if((temp !=null)&&temp.OwnerName!="Rusty" && temp.Armies > 0)
+                            if((temp !=null)&&temp.OwnerName!="Rusty")
                             {
                                 return new BeginAttackResponse { From = attackerLocation, To = defenderLocation };
                             }

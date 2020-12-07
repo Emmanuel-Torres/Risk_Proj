@@ -4,8 +4,9 @@ using System.Text;
 
 namespace Risk.Shared
 {
-    class RestartGameRequest
+    public class RestartGameRequest
     {
         public bool RestartGame { get; set; }
+        public GameState GameState { get; set; }
     }
 }
