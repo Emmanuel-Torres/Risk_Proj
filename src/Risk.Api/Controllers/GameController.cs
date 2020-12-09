@@ -26,15 +26,16 @@ namespace Risk.Api.Controllers
         private readonly IConfiguration config;
         private readonly ILogger<GameRunner> logger;
         private readonly List<ApiPlayer> removedPlayers = new List<ApiPlayer>();
-        private List<ApiPlayer> initialPlayers = new List<ApiPlayer>();
+        private ConcurrentBag<ApiPlayer> initialPlayers;
 
-        public GameController(Game.Game game, IMemoryCache memoryCache, IHttpClientFactory client, IConfiguration config, ILogger<GameRunner> logger)
+        public GameController(Game.Game game, IMemoryCache memoryCache, IHttpClientFactory client, IConfiguration config, ILogger<GameRunner> logger, ConcurrentBag<ApiPlayer> initialPlayers)
         {
             this.game = game;
             this.clientFactory = client;
             this.config = config;
             this.logger = logger;
             this.memoryCache = memoryCache;
+            this.initialPlayers = initialPlayers;
         }
 
         private async Task<bool> ClientIsRepsonsive(string baseAddress)
