@@ -26,7 +26,7 @@ namespace Risk.Api.Controllers
         private readonly IConfiguration config;
         private readonly ILogger<GameRunner> logger;
         private readonly List<ApiPlayer> removedPlayers = new List<ApiPlayer>();
-        private IEnumerable<IPlayer> initialPlayers= new IEnumerable<ApiPlayer>();
+        private List<ApiPlayer> initialPlayers = new List<ApiPlayer>();
 
         public GameController(Game.Game game, IMemoryCache memoryCache, IHttpClientFactory client, IConfiguration config, ILogger<GameRunner> logger)
         {
@@ -87,6 +87,12 @@ namespace Risk.Api.Controllers
                 newPlayer.HttpClient.BaseAddress = new Uri(joinRequest.CallbackBaseAddress);
 
                 game.AddPlayer(newPlayer);
+                
+                initialPlayers.Add(new ApiPlayer(
+                    name: newPlayer.Name,
+                    token: newPlayer.Token,
+                    httpClient: newPlayer.HttpClient
+                ));
 
                 //this is where we add players to the new player list that is used to repopulate players when a game is restarted
 
@@ -103,11 +109,6 @@ namespace Risk.Api.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> StartGame(StartGameRequest startGameRequest)
         {
-            initialPlayers = game.Players;
-            foreach(var player in game.Players)
-            {
-                initialPlayers.
-            }
             if(game.GameState != GameState.Joining)
             {
                 return BadRequest("Game not in Joining state");
@@ -116,6 +117,7 @@ namespace Risk.Api.Controllers
             {
                 return BadRequest("Secret code doesn't match, unable to start game.");
             }
+
             game.StartGame();
             var gameRunner = new GameRunner(game, logger);
             await gameRunner.StartGameAsync();
@@ -127,13 +129,17 @@ namespace Risk.Api.Controllers
         {
             if (restartGameRequest.RestartGame == true && restartGameRequest.GameState == GameState.GameOver)
             {
-                game = InitializeGame(int.Parse(config["height"] ?? "5"),
+                var tempGame = InitializeGame(int.Parse(config["height"] ?? "5"),
                     int.Parse(config["width"] ?? "5"),
                     int.Parse(config["startingArmies"] ?? "5"));
+                
                 foreach (var player in initialPlayers)
                 {
-                    game.AddPlayer(player);
+                    tempGame.AddPlayer(player);
                 }
+                
+                game = tempGame;
+
                 return Ok();
             }
 
