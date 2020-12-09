@@ -26,7 +26,7 @@ namespace Risk.Api.Controllers
         private readonly IConfiguration config;
         private readonly ILogger<GameRunner> logger;
         private readonly List<ApiPlayer> removedPlayers = new List<ApiPlayer>();
-        private List<ApiPlayer> initialPlayers = new List<ApiPlayer>();
+        private IEnumerable<IPlayer> initialPlayers= new IEnumerable<ApiPlayer>();
 
         public GameController(Game.Game game, IMemoryCache memoryCache, IHttpClientFactory client, IConfiguration config, ILogger<GameRunner> logger)
         {
@@ -87,7 +87,7 @@ namespace Risk.Api.Controllers
                 newPlayer.HttpClient.BaseAddress = new Uri(joinRequest.CallbackBaseAddress);
 
                 game.AddPlayer(newPlayer);
-                initialPlayers.Add(newPlayer);
+
                 //this is where we add players to the new player list that is used to repopulate players when a game is restarted
 
                 return Ok(new JoinResponse {
@@ -103,6 +103,11 @@ namespace Risk.Api.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> StartGame(StartGameRequest startGameRequest)
         {
+            initialPlayers = game.Players;
+            foreach(var player in game.Players)
+            {
+                initialPlayers.
+            }
             if(game.GameState != GameState.Joining)
             {
                 return BadRequest("Game not in Joining state");
