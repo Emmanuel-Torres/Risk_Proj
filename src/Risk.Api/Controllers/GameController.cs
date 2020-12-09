@@ -20,22 +20,20 @@ namespace Risk.Api.Controllers
     [ApiController]
     public class GameController : Controller
     {
-        private Game.Game game;
         private IMemoryCache memoryCache;
+        private readonly GameHolder gameHolder;
         private readonly IHttpClientFactory clientFactory;
         private readonly IConfiguration config;
         private readonly ILogger<GameRunner> logger;
         private readonly List<ApiPlayer> removedPlayers = new List<ApiPlayer>();
-        private ConcurrentBag<ApiPlayer> initialPlayers;
 
-        public GameController(Game.Game game, IMemoryCache memoryCache, IHttpClientFactory client, IConfiguration config, ILogger<GameRunner> logger, ConcurrentBag<ApiPlayer> initialPlayers)
+        public GameController(GameHolder gameHolder, IMemoryCache memoryCache, IHttpClientFactory client, IConfiguration config, ILogger<GameRunner> logger)
         {
-            this.game = game;
+            this.gameHolder = gameHolder;
             this.clientFactory = client;
             this.config = config;
             this.logger = logger;
             this.memoryCache = memoryCache;
-            this.initialPlayers = initialPlayers;
         }
 
         private async Task<bool> ClientIsRepsonsive(string baseAddress)
@@ -52,7 +50,7 @@ namespace Risk.Api.Controllers
 
             if (!memoryCache.TryGetValue("Status", out gameStatus))
             {
-                gameStatus = game.GetGameStatus();
+                gameStatus = gameHolder.game.GetGameStatus();
 
                 MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions();
                 cacheEntryOptions.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(1);
@@ -78,7 +76,7 @@ namespace Risk.Api.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Join(JoinRequest joinRequest)
         {
-            if (game.GameState == GameState.Joining && await ClientIsRepsonsive(joinRequest.CallbackBaseAddress))
+            if (gameHolder.game.GameState == GameState.Joining && await ClientIsRepsonsive(joinRequest.CallbackBaseAddress))
             {
                 var newPlayer = new ApiPlayer(
                     name: joinRequest.Name,
@@ -87,9 +85,9 @@ namespace Risk.Api.Controllers
                 );
                 newPlayer.HttpClient.BaseAddress = new Uri(joinRequest.CallbackBaseAddress);
 
-                game.AddPlayer(newPlayer);
+                gameHolder.game.AddPlayer(newPlayer);
                 
-                initialPlayers.Add(new ApiPlayer(
+                gameHolder.initialPlayers.Add(new ApiPlayer(
                     name: newPlayer.Name,
                     token: newPlayer.Token,
                     httpClient: newPlayer.HttpClient
@@ -110,7 +108,7 @@ namespace Risk.Api.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> StartGame(StartGameRequest startGameRequest)
         {
-            if(game.GameState != GameState.Joining)
+            if(gameHolder.game.GameState != GameState.Joining)
             {
                 return BadRequest("Game not in Joining state");
             }
@@ -119,8 +117,8 @@ namespace Risk.Api.Controllers
                 return BadRequest("Secret code doesn't match, unable to start game.");
             }
 
-            game.StartGame();
-            var gameRunner = new GameRunner(game, logger);
+            gameHolder.game.StartGame();
+            var gameRunner = new GameRunner(gameHolder.game, logger);
             await gameRunner.StartGameAsync();
             return Ok();
         }
@@ -134,12 +132,12 @@ namespace Risk.Api.Controllers
                     int.Parse(config["width"] ?? "5"),
                     int.Parse(config["startingArmies"] ?? "5"));
                 
-                foreach (var player in initialPlayers)
+                foreach (var player in gameHolder.initialPlayers)
                 {
                     tempGame.AddPlayer(player);
                 }
                 
-                game = tempGame;
+                gameHolder.game = tempGame;
 
                 return Ok();
             }
