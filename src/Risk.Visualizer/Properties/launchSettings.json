@@ -1,11 +1,17 @@
 ﻿{
-     "Risk.Visualizer": {
-      "commandName": "Project",
-      "launchBrowser": true,
-      "applicationUrl": "http://localhost:3000",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+  "Risk.Visualizer": {
+    "commandName": "Project",
+    "launchBrowser": true,
+    "applicationUrl": "http://localhost:3000",
+    "environmentVariables": {
+      "ASPNETCORE_ENVIRONMENT": "Development"
     }
+  },
+  "Docker": {
+    "commandName": "Docker",
+    "launchBrowser": true,
+    "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+    "publishAllPorts": true
   }
+}
 }

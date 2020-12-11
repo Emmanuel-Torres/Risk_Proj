@@ -1,25 +1,34 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Configuration;
+using Risk.Shared;
 
-namespace Risk.Visualizer.Pages
+namespace Risk
 {
     public class IndexModel : PageModel
     {
-        private readonly ILogger<IndexModel> _logger;
+        private readonly IHttpClientFactory httpClientFactory;
+        private readonly IConfiguration configuration;
 
-        public IndexModel(ILogger<IndexModel> logger)
+        public IndexModel(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
-            _logger = logger;
+            this.httpClientFactory = httpClientFactory;
+            this.configuration = configuration;
         }
 
-        public void OnGet()
-        {
+        public GameStatus Status { get; set; }
+        public int NumRows { get; private set; }
+        public int NumCols { get; private set; }
 
+        public async Task OnGet()
+        {
+            Status = await httpClientFactory.CreateClient().GetFromJsonAsync<GameStatus>($"{ configuration["GameServer"]}/status");
+            NumRows = Status.Board.Max(r => r.Location.Row);
+            NumCols = Status.Board.Max(c => c.Location.Column);
         }
     }
 }
