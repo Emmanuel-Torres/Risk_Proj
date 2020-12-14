@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -26,9 +27,40 @@ namespace Risk
 
         public async Task OnGet()
         {
-            Status = await httpClientFactory.CreateClient().GetFromJsonAsync<GameStatus>($"{ configuration["GameServer"]}/status");
+            Status = await httpClientFactory.CreateClient().GetFromJsonAsync<GameStatus>($"{ configuration["ServerName"]}/status");
             NumRows = Status.Board.Max(r => r.Location.Row);
             NumCols = Status.Board.Max(c => c.Location.Column);
+        }
+
+        public async Task<IActionResult> OnPostStartGameAsync()
+        {
+            var client = httpClientFactory.CreateClient();
+            Task.Run(() =>
+                client.PostAsJsonAsync($"{configuration["ServerName"]}/startgame", new StartGameRequest { SecretCode = configuration["secretCode"] })
+            );
+            return new RedirectToPageResult("Index");
+        }
+        public async Task<IActionResult> OnPostRestartGameAsync()
+        {
+            Status = await httpClientFactory
+                .CreateClient()
+                .GetFromJsonAsync<GameStatus>($"{configuration["ServerName"]}/status");
+
+            var client = httpClientFactory.CreateClient();
+            var response = await client.PostAsJsonAsync($"{configuration["ServerName"]}/restartgame", new RestartGameRequest { RestartGame = true, GameState = Status.GameState });
+
+            //add code here that receives the response from the previous line, and then send a request to start the game.
+            if (response.IsSuccessStatusCode)
+            {
+                Task.Run(() =>
+                client.PostAsJsonAsync($"{configuration["ServerName"]}/startgame", new StartGameRequest { SecretCode = configuration["secretCode"] }));
+            }
+            else
+            {
+                throw new Exception("Cannot restart game");
+            }
+
+            return new RedirectToPageResult("Index");
         }
     }
 }

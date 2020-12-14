@@ -4,6 +4,7 @@
 @model IndexModel
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
+    Layout = "_Layout";
     ViewData["Title"] = "Home page";
 }
 @if (Model.Status.GameState != GameState.GameOver)
@@ -11,7 +12,20 @@
     <meta http-equiv="refresh" content="1">
 }
 
-<h1>DO SOMETHING!!</h1>
+@if (@Model.Status.GameState == Risk.Shared.GameState.Joining)
+{
+    <form method="post" asp-page-handler="StartGame">
+        <button type="submit">Start Game</button>
+    </form>
+}
+
+@if (Model.Status.GameState == Risk.Shared.GameState.GameOver)
+{
+    <form method="post" asp-page-handler="RestartGame">
+        <button type="submit">Restart Game</button>
+    </form>
+}
+
 <h2>Game State: @Model.Status.GameState</h2>
 
 <h3>Players:</h3>

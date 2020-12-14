@@ -52,19 +52,19 @@ namespace Risk.Visualizer
                 endpoints.MapRazorPages();
             });
 
-            JoinServer(httpClientFactory.CreateClient(),
-                Configuration["GameServer"],
-                Configuration["ClientCallbackAddress"],
-               Configuration["playerName"]
-                );
+            //JoinServer(httpClientFactory.CreateClient(),
+            //    Configuration["ServerName"],
+            //    Configuration["ClientCallbackAddress"],
+            //    Configuration["playerName"] 
+            //    );
         }
 
-        private async void JoinServer(HttpClient httpClient, string serverName, string clientBaseAddress, string name)
-        {
-            await Task.Delay(TimeSpan.FromSeconds(5));
-            var joinRequest = new JoinRequest { CallbackBaseAddress = clientBaseAddress, Name = name };
-            var joinResponse = await httpClient.PostAsJsonAsync($"{serverName}/join", joinRequest);
-        }
+        //private async void JoinServer(HttpClient httpClient, string serverName, string clientBaseAddress, string name)
+        //{
+        //    await Task.Delay(TimeSpan.FromSeconds(5));
+        //    var joinRequest = new JoinRequest { CallbackBaseAddress = clientBaseAddress, Name = name };
+        //    var joinResponse = await httpClient.PostAsJsonAsync($"{serverName}/join", joinRequest);
+        //}
     }
 }
 
