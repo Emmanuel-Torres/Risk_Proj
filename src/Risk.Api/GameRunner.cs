@@ -20,13 +20,15 @@ namespace Risk.Api
         private readonly Game.Game game;
         private readonly IList<ApiPlayer> removedPlayers;
         private readonly ILogger<GameRunner> logger;
+        private bool mercenaries=false;
         public const int MaxFailedTries = 5;
 
-        public GameRunner(Game.Game game, ILogger<GameRunner> logger)
+        public GameRunner(Game.Game game, ILogger<GameRunner> logger, bool mercenaries)
         {
             this.game = game;
             this.removedPlayers = new List<ApiPlayer>();
             this.logger = logger;
+            this.mercenaries = mercenaries;
         }
 
         public async Task StartGameAsync()
@@ -210,7 +212,11 @@ namespace Risk.Api
         {
             foreach (Territory territory in game.Board.Territories)
             {
-                if (territory.Owner == game.GetPlayer(token))
+                if (mercenaries == true && territory.Owner == game.GetPlayer(token))
+                {
+                    territory.Owner = null;
+                }
+                if (mercenaries == false && territory.Owner == game.GetPlayer(token))
                 {
                     territory.Owner = null;
                     territory.Armies = 0;
