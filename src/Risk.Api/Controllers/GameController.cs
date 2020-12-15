@@ -26,14 +26,16 @@ namespace Risk.Api.Controllers
         private readonly IConfiguration config;
         private readonly ILogger<GameRunner> logger;
         private readonly List<ApiPlayer> removedPlayers = new List<ApiPlayer>();
+        private bool mercenaries=false;
 
-        public GameController(GameHolder gameHolder, IMemoryCache memoryCache, IHttpClientFactory client, IConfiguration config, ILogger<GameRunner> logger)
+        public GameController(GameHolder gameHolder, IMemoryCache memoryCache, IHttpClientFactory client, IConfiguration config, ILogger<GameRunner> logger, bool mercenaries)
         {
             this.gameHolder = gameHolder;
             this.clientFactory = client;
             this.config = config;
             this.logger = logger;
             this.memoryCache = memoryCache;
+            this.mercenaries = mercenaries;
         }
 
         private async Task<bool> ClientIsRepsonsive(string baseAddress)
@@ -118,7 +120,7 @@ namespace Risk.Api.Controllers
             }
 
             gameHolder.game.StartGame();
-            var gameRunner = new GameRunner(gameHolder.game, logger);
+            var gameRunner = new GameRunner(gameHolder.game, logger, mercenaries);
             await gameRunner.StartGameAsync();
             return Ok();
         }

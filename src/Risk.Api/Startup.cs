@@ -39,8 +39,9 @@ namespace Risk.Api
                 int.Parse(Configuration["width"] ?? "5"),
                 int.Parse(Configuration["startingArmies"] ?? "5"));
 
-            services.AddSingleton(new GameHolder(tempGame, new ConcurrentBag<ApiPlayer>()));
 
+            services.AddSingleton(new GameHolder(tempGame, new ConcurrentBag<ApiPlayer>()));
+       
             services.AddMemoryCache();
             services.AddHttpClient();
         }
