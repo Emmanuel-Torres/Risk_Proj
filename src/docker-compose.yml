@@ -12,6 +12,7 @@ services:
     - width=8
     - startingArmies=200
     - secretCode=banana
+    - gameMode=Mercenaries
     ports:
     - "5000:80"
     networks:

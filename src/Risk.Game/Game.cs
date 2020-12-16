@@ -14,9 +14,12 @@ namespace Risk.Game
             StartingArmies = startOptions.StartingArmiesPerPlayer;
             gameState = GameState.Initializing;
             playerDictionary = new ConcurrentDictionary<string, IPlayer>();
+            gameMode = startOptions.GameMode;
         }
 
         private ConcurrentDictionary<string, IPlayer> playerDictionary;
+        
+
         public IEnumerable<IPlayer> Players => playerDictionary.Values;
         public void AddPlayer(IPlayer newPlayer)
         {
@@ -37,6 +40,12 @@ namespace Risk.Game
         public DateTime EndTime { get; set; }
         public int StartingArmies { get; }
         public GameState GameState => gameState;
+        private string gameMode;
+
+        public string GetGameMode()
+        {
+            return gameMode;
+        }
 
         private IEnumerable<Territory> createTerritories(int height, int width)
         {

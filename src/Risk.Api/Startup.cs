@@ -37,7 +37,8 @@ namespace Risk.Api
             var tempGame = GameController.InitializeGame(
                 int.Parse(Configuration["height"] ?? "5"),
                 int.Parse(Configuration["width"] ?? "5"),
-                int.Parse(Configuration["startingArmies"] ?? "5"));
+                int.Parse(Configuration["startingArmies"] ?? "5"),
+                Configuration["gameMode"]);
 
 
             services.AddSingleton(new GameHolder(tempGame, new ConcurrentBag<ApiPlayer>()));

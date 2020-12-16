@@ -26,16 +26,16 @@ namespace Risk.Api.Controllers
         private readonly IConfiguration config;
         private readonly ILogger<GameRunner> logger;
         private readonly List<ApiPlayer> removedPlayers = new List<ApiPlayer>();
-        private bool mercenaries=false;
+        //private bool mercenaries=false;
 
-        public GameController(GameHolder gameHolder, IMemoryCache memoryCache, IHttpClientFactory client, IConfiguration config, ILogger<GameRunner> logger, bool mercenaries)
+        public GameController(GameHolder gameHolder, IMemoryCache memoryCache, IHttpClientFactory client, IConfiguration config, ILogger<GameRunner> logger)
         {
             this.gameHolder = gameHolder;
             this.clientFactory = client;
             this.config = config;
             this.logger = logger;
             this.memoryCache = memoryCache;
-            this.mercenaries = mercenaries;
+            //this.mercenaries = mercenaries;
         }
 
         private async Task<bool> ClientIsRepsonsive(string baseAddress)
@@ -62,13 +62,15 @@ namespace Risk.Api.Controllers
             return Ok(gameStatus);
         }
 
-        public static Game.Game InitializeGame (int height, int width, int numOfArmies)
+        public static Game.Game InitializeGame (int height, int width, int numOfArmies, string gameMode)
         {
             GameStartOptions startOptions = new GameStartOptions {
                 Height = height,
                 Width = width,
-                StartingArmiesPerPlayer = numOfArmies
+                StartingArmiesPerPlayer = numOfArmies,
+                GameMode = gameMode
             };
+
             Game.Game newGame = new Game.Game(startOptions);
 
             newGame.StartJoining();
@@ -120,7 +122,7 @@ namespace Risk.Api.Controllers
             }
 
             gameHolder.game.StartGame();
-            var gameRunner = new GameRunner(gameHolder.game, logger, mercenaries);
+            var gameRunner = new GameRunner(gameHolder.game, logger);
             await gameRunner.StartGameAsync();
             return Ok();
         }
@@ -132,7 +134,8 @@ namespace Risk.Api.Controllers
             {
                 var tempGame = InitializeGame(int.Parse(config["height"] ?? "5"),
                     int.Parse(config["width"] ?? "5"),
-                    int.Parse(config["startingArmies"] ?? "5"));
+                    int.Parse(config["startingArmies"] ?? "5"),
+                    config["gameMode"] ?? "Regular");
                 
                 foreach (var player in gameHolder.initialPlayers)
                 {
