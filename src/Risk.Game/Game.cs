@@ -211,7 +211,7 @@ namespace Risk.Game
             {
                 attackerDice[i] = rand.Next(1, 7);
             }
-            for (int i = 0; i < Math.Min(defendingTerritory.Armies, MAX_DEFENDER_DICE) && !(defendingTerritory.Owner is null); i++)
+            for (int i = 0; i < Math.Min(defendingTerritory.Armies, MAX_DEFENDER_DICE); i++)
             {
                 defenderDice[i] = rand.Next(1, 7);
             }
@@ -219,13 +219,17 @@ namespace Risk.Game
             Array.Sort(defenderDice);
             Array.Reverse(attackerDice);
             Array.Reverse(defenderDice);
-            for (int i = 0; i <= defendingTerritory.Armies && i < defenderDice.Length && i < attackingTerritory.Armies - 1; i++)
-            {
-                if (attackerDice[i] > defenderDice[i])
-                    defendingTerritory.Armies--;
-                else
-                    attackingTerritory.Armies--;
+
+            if (defendingTerritory.Armies > 0 && !(defendingTerritory.Owner is null)) {
+                for (int i = 0; i <= defendingTerritory.Armies && i < defenderDice.Length && i < attackingTerritory.Armies - 1; i++)
+                {
+                    if (attackerDice[i] > defenderDice[i])
+                        defendingTerritory.Armies--;
+                    else
+                        attackingTerritory.Armies--;
+                }
             }
+
             if (defendingTerritory.Armies < 1)
             {
                 BattleWasWon(attackingTerritory, defendingTerritory);
