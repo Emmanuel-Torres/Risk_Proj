@@ -211,7 +211,7 @@ namespace Risk.Game
             {
                 attackerDice[i] = rand.Next(1, 7);
             }
-            for (int i = 0; i < Math.Min(defendingTerritory.Armies, MAX_DEFENDER_DICE); i++)
+            for (int i = 0; i < Math.Min(defendingTerritory.Armies, MAX_DEFENDER_DICE) && !(defendingTerritory.Owner is null); i++)
             {
                 defenderDice[i] = rand.Next(1, 7);
             }
@@ -234,7 +234,22 @@ namespace Risk.Game
                     AttackInvalid = false
                 };
             }
+
+            if(gameMode == "Mercenaries" && defendingTerritory.Owner is null)
+            {
+                JoinMercenaries(attackingTerritory, defendingTerritory);
+                return new TryAttackResult {
+                    CanContinue = false,
+                    AttackInvalid = false
+                };
+            }
+
             return new TryAttackResult { CanContinue = attackingTerritory.Armies > 1, AttackInvalid = false };
+        }
+
+        private void JoinMercenaries(Territory attackingTerritory, Territory defendingTerritory)
+        {
+            defendingTerritory.Owner = attackingTerritory.Owner;
         }
 
         private bool canAttack(string attackerToken, Territory attackingTerritory, Territory defendingTerritory)
@@ -249,7 +264,7 @@ namespace Risk.Game
         public void BattleWasWon(Territory attackingTerritory, Territory defendingTerritory)
         {
             defendingTerritory.Owner = attackingTerritory.Owner;
-            defendingTerritory.Armies = attackingTerritory.Armies - 1;
+            defendingTerritory.Armies =  attackingTerritory.Armies - 1;
             attackingTerritory.Armies = attackingTerritory.Armies - defendingTerritory.Armies;
         }
     }

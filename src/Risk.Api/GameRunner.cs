@@ -212,11 +212,11 @@ namespace Risk.Api
         {
             foreach (Territory territory in game.Board.Territories)
             {
-                if (game.GetGameMode() == "Mercenaries" && territory.Owner == game.GetPlayer(token))
+                if (game.GetGameMode() == "Mercenaries" && territory.Owner == game.GetPlayer(token) && game.GameState == GameState.Attacking)
                 {
                     territory.Owner = null;
                 }
-                if (game.GetGameMode() == "Regular" && territory.Owner == game.GetPlayer(token))
+                else if (territory.Owner == game.GetPlayer(token))
                 {
                     territory.Owner = null;
                     territory.Armies = 0;
