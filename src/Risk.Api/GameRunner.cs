@@ -147,6 +147,7 @@ namespace Risk.Api
                     }
                     game.SaveGameMoves();
                 }
+                ReiforcePlayers();
             }
             logger.LogInformation("Game Over");
             game.SetGameOver();
@@ -154,9 +155,23 @@ namespace Risk.Api
 
         public void ReiforcePlayers()
         {
-            foreach(var player in game.Players)
+            int numReinforcements = 0;
+            foreach (var player in game.Players)
             {
                 var territories = game.Board.Territories.Count(t => t.Owner == player);
+                if (territories <= 5 && territories > 0)
+                {
+                    numReinforcements = 1;
+                }
+                else 
+                {
+                    numReinforcements = 0;
+                }
+                
+                foreach(var territory in game.Board.Territories.Where(t => t.Owner == player))
+                {
+                    territory.Armies += numReinforcements;
+                }
             }
         }
 
