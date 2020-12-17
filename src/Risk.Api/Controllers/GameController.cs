@@ -45,6 +45,12 @@ namespace Risk.Api.Controllers
             return response.ToLower() == "yes";
         }
 
+        [HttpGet("playbyplay")]
+        public IActionResult GetPlayByPlay()
+        {
+            return Ok(gameHolder.game.MoveList);
+        }
+
         [HttpGet("status")]
         public IActionResult GameStatus()
         {

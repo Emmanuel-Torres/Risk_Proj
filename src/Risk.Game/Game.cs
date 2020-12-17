@@ -18,7 +18,8 @@ namespace Risk.Game
         }
 
         private ConcurrentDictionary<string, IPlayer> playerDictionary;
-        
+        public IEnumerable<GameStatus> MoveList => moveList.ToArray();
+        private List<GameStatus> moveList = new List<GameStatus>();
 
         public IEnumerable<IPlayer> Players => playerDictionary.Values;
         public void AddPlayer(IPlayer newPlayer)
@@ -42,6 +43,11 @@ namespace Risk.Game
         public GameState GameState => gameState;
         private string gameMode;
 
+        public void SaveGameMoves()
+        {
+            GameStatus gameStatus = GetGameStatus();
+            moveList.Add(gameStatus);
+        }
         public string GetGameMode()
         {
             return gameMode;

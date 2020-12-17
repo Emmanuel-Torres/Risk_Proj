@@ -62,6 +62,7 @@ namespace Risk.Api
                             deployArmyResponse = await askForDeployLocationAsync(currentPlayer, DeploymentStatus.PreviousAttemptFailed);
                         }
                     }
+                    game.SaveGameMoves();
                     logger.LogDebug($"{currentPlayer.Name} wants to deploy to {deployArmyResponse.DesiredLocation}");
                 }
             }
@@ -108,7 +109,6 @@ namespace Risk.Api
                                 defendingTerritory = game.Board.GetTerritory(beginAttackResponse.To);
 
                                 logger.LogInformation($"{currentPlayer.Name} wants to attack from {attackingTerritory} to {defendingTerritory}");
-
                                 attackResult = game.TryAttack(currentPlayer.Token, attackingTerritory, defendingTerritory);
                             }
                             catch (Exception ex)
@@ -147,8 +147,9 @@ namespace Risk.Api
                     {
                         logger.LogWarning($"{currentPlayer.Name} cannot attack.");
                     }
+                    game.SaveGameMoves();
                 }
-
+               
 
             }
             logger.LogInformation("Game Over");

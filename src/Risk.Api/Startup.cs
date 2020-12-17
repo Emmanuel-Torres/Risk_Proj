@@ -42,7 +42,7 @@ namespace Risk.Api
 
 
             services.AddSingleton(new GameHolder(tempGame, new ConcurrentBag<ApiPlayer>()));
-       
+         
             services.AddMemoryCache();
             services.AddHttpClient();
         }
