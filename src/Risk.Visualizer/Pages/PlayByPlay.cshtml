@@ -6,6 +6,33 @@
 }
 
 <h2>Game State: @Model.Status.GameState</h2>
+<form method="post" asp-page-handler="SetActionToCache">
+    <button type="submit" value="first">Go to First</button>
+</form>
+
+
+@if (Model.Status.GameState == Risk.Shared.GameState.GameOver)
+{
+    {
+        string winner = null;
+        int winningScore = 0;
+
+        foreach (var player in Model.Status.PlayerStats.OrderByDescending(p => p.Score))
+        {
+            if (winner == null)
+            {
+                winner = player.Name;
+                winningScore = player.Score;
+            }
+            if (player.Score > winningScore)
+            {
+                winner = player.Name;
+                winningScore = player.Score;
+            }
+        }
+        <h1>The winner is @winner</h1>
+    }
+}
 
 <h3>Players:</h3>
 <table>

@@ -20,7 +20,6 @@ namespace Risk.Api
         private readonly Game.Game game;
         private readonly IList<ApiPlayer> removedPlayers;
         private readonly ILogger<GameRunner> logger;
-        //private bool mercenaries=false;
         public const int MaxFailedTries = 5;
 
         public GameRunner(Game.Game game, ILogger<GameRunner> logger)
@@ -28,7 +27,6 @@ namespace Risk.Api
             this.game = game;
             this.removedPlayers = new List<ApiPlayer>();
             this.logger = logger;
-            //this.mercenaries = mercenaries;
         }
 
         public async Task StartGameAsync()

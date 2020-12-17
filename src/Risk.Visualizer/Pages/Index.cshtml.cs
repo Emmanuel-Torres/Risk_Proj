@@ -48,8 +48,6 @@ namespace Risk
 
             var client = httpClientFactory.CreateClient();
             var response = await client.PostAsJsonAsync($"{configuration["ServerName"]}/restartgame", new RestartGameRequest { RestartGame = true, GameState = Status.GameState });
-
-            //add code here that receives the response from the previous line, and then send a request to start the game.
             if (response.IsSuccessStatusCode)
             {
                 Task.Run(() =>

@@ -14,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Risk.Shared;
 using System.Net.Http.Json;
+using Risk.Visualizer.Data;
 
 namespace Risk.Visualizer
 {
@@ -32,6 +33,7 @@ namespace Risk.Visualizer
             services.AddControllers();
             services.AddHttpClient();
             services.AddRazorPages();
+            services.AddSingleton<ICacheService, LocalCacheRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,11 +54,7 @@ namespace Risk.Visualizer
                 endpoints.MapRazorPages();
             });
 
-            //JoinServer(httpClientFactory.CreateClient(),
-            //    Configuration["ServerName"],
-            //    Configuration["ClientCallbackAddress"],
-            //    Configuration["playerName"] 
-            //    );
+         
         }
 
         //private async void JoinServer(HttpClient httpClient, string serverName, string clientBaseAddress, string name)

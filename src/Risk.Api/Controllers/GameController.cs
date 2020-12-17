@@ -26,7 +26,7 @@ namespace Risk.Api.Controllers
         private readonly IConfiguration config;
         private readonly ILogger<GameRunner> logger;
         private readonly List<ApiPlayer> removedPlayers = new List<ApiPlayer>();
-        //private bool mercenaries=false;
+       
 
         public GameController(GameHolder gameHolder, IMemoryCache memoryCache, IHttpClientFactory client, IConfiguration config, ILogger<GameRunner> logger)
         {
@@ -35,7 +35,7 @@ namespace Risk.Api.Controllers
             this.config = config;
             this.logger = logger;
             this.memoryCache = memoryCache;
-            //this.mercenaries = mercenaries;
+           
         }
 
         private async Task<bool> ClientIsRepsonsive(string baseAddress)
@@ -102,8 +102,6 @@ namespace Risk.Api.Controllers
                     token: newPlayer.Token,
                     httpClient: newPlayer.HttpClient
                 ));
-
-                //this is where we add players to the new player list that is used to repopulate players when a game is restarted
 
                 return Ok(new JoinResponse {
                     Token = newPlayer.Token
