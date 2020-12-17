@@ -53,7 +53,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HMClient", "HMClient\HMClie
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maksad_Client", "Maksad_Client\Maksad_Client.csproj", "{81EE8610-42AA-4690-BFDD-A2E3D2F297A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Risk.Visualizer", "Risk.Visualizer\Risk.Visualizer.csproj", "{8861B072-B1C2-47C5-B77E-B270E6369E7E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Risk.Visualizer", "Risk.Visualizer\Risk.Visualizer.csproj", "{8861B072-B1C2-47C5-B77E-B270E6369E7E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

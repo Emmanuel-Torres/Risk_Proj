@@ -12,6 +12,8 @@
     <meta http-equiv="refresh" content="1">
 }
 
+<h2>Game State: @Model.Status.GameState</h2>
+
 @if (@Model.Status.GameState == Risk.Shared.GameState.Joining)
 {
     <form method="post" asp-page-handler="StartGame">
@@ -24,7 +26,7 @@
     <form method="post" asp-page-handler="RestartGame">
         <button type="submit">Restart Game</button>
     </form>
-    { 
+    {
         string winner = null;
         int winningScore = 0;
 
@@ -42,10 +44,12 @@
             }
         }
         <h1>The winner is @winner</h1>
+        <h2>Winner Score: @winningScore</h2>
+
+        <br />
+        <h2>finishing stats:</h2>
     }
 }
-
-<h2>Game State: @Model.Status.GameState</h2>
 
 <h3>Players:</h3>
 <table>
@@ -70,6 +74,10 @@
     </tbody>
 </table>
 
+@if (Model.Status.GameState == Risk.Shared.GameState.GameOver)
+{
+    <h2>Finishing Board:</h2>
+}
 <table border="1px" cellpadding="10px">
     @for (int rows = 0; rows <= Model.NumRows; rows++)
     {
