@@ -83,7 +83,7 @@ namespace Risk.Api
         private async Task doBattle()
         {
             game.StartTime = DateTime.Now;
-            while (game.Players.Count() > 1 && game.GameState == GameState.Attacking && game.Players.Any(p=>game.PlayerCanAttack(p)))
+            while (game.Players.Count() > 1 && game.GameState == GameState.Attacking && game.Players.Any(p => game.PlayerCanAttack(p)))
             {
 
                 for (int i = 0; i < game.Players.Count() && game.Players.Count() > 1; i++)
@@ -93,7 +93,7 @@ namespace Risk.Api
                     {
                         var failedTries = 0;
 
-                        TryAttackResult attackResult = new TryAttackResult {  AttackInvalid = false} ;
+                        TryAttackResult attackResult = new TryAttackResult { AttackInvalid = false };
                         Territory attackingTerritory = null;
                         Territory defendingTerritory = null;
                         do
@@ -111,7 +111,7 @@ namespace Risk.Api
                             }
                             catch (Exception ex)
                             {
-                                attackResult = new TryAttackResult { AttackInvalid = true, Message=ex.Message };
+                                attackResult = new TryAttackResult { AttackInvalid = true, Message = ex.Message };
                             }
                             if (attackResult.AttackInvalid)
                             {
@@ -147,11 +147,17 @@ namespace Risk.Api
                     }
                     game.SaveGameMoves();
                 }
-               
-
             }
             logger.LogInformation("Game Over");
             game.SetGameOver();
+        }
+
+        public void ReiforcePlayers()
+        {
+            foreach(var player in game.Players)
+            {
+                var territories = game.Board.Territories.Count(t => t.Owner == player);
+            }
         }
 
         private void RemovePlayerFromGame(string token)

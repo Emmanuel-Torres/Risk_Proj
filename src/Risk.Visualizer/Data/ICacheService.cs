@@ -7,9 +7,20 @@ namespace Risk.Visualizer.Data
 {
     public interface ICacheService
     {
-        void Set(string action);
-        string Get();
+        void SetAction(string action);
+        
+        string GetAction();
+        
+        void ResetIndex();
+        
+        void IncrementIndex();
+        
+        void DecrementIndex();
+        
+        void MaxIndex(int max);
+        
+        int GetIndex();
+        
         bool IsEmpty();
-    
     }
 }

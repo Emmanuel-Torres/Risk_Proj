@@ -7,7 +7,16 @@
 
 <h2>Game State: @Model.Status.GameState</h2>
 <form method="post" asp-page-handler="SetActionToCache">
-    <button type="submit" value="first">Go to First</button>
+    <button type="submit" name="action" value="first">Go to First</button>
+</form>
+<form method="post" asp-page-handler="SetActionToCache">
+    <button type="submit" name="action" value="previousMove">Go to Previous</button>
+</form>
+<form method="post" asp-page-handler="SetActionToCache">
+    <button type="submit" name="action" value="nextMove">Go to Next</button>
+</form>
+<form method="post" asp-page-handler="SetActionToCache">
+    <button type="submit" name="action" value="last">Go to Last</button>
 </form>
 
 

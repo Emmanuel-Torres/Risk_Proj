@@ -35,22 +35,52 @@ namespace Risk.Visualizer.Pages
         public async Task OnGet()
         {
             ListOfMoves = await httpClientFactory.CreateClient().GetFromJsonAsync<IEnumerable<GameStatus>>($"{ configuration["ServerName"]}/playbyplay");
-            Status = ListOfMoves.Last();
+            Status = GetActionFromCache(ListOfMoves, _cache.GetIndex());
             NumRows = Status.Board.Max(r => r.Location.Row);
             NumCols = Status.Board.Max(c => c.Location.Column);
+        }
 
-        }
-        private string GetActionFromCache()
+        private GameStatus GetActionFromCache(IEnumerable<GameStatus> moves, int currentIndex)
         {
-            return _cache.Get();
+            if (_cache.GetAction() == "first")
+            {
+                _cache.ResetIndex();
+                return moves.First();
+            }
+            else if (_cache.GetAction() == "nextMove")
+            {
+                if (currentIndex == moves.Count() - 1)
+                {
+                    return moves.ElementAt(_cache.GetIndex());
+                }
+                else
+                {
+                    _cache.IncrementIndex();
+                    return moves.ElementAt(_cache.GetIndex());
+                }
+            }
+            else if (_cache.GetAction() == "previousMove")
+            {
+                if (currentIndex < 1)
+                {
+                    return moves.ElementAt(_cache.GetIndex());
+                }
+                else {
+                    _cache.DecrementIndex();
+                    return moves.ElementAt(_cache.GetIndex());
+                }
+            }
+            else
+            {
+                _cache.MaxIndex(moves.Count() - 1);
+                return moves.Last();
+            }
         }
-        public IActionResult setActionToCache(string newAction)
+
+        public IActionResult OnPostSetActionToCache(string action)
         {
-            _cache.Set(newAction);
+            _cache.SetAction(action);
             return RedirectToPage();
         }
-
-        
-
     }
 }
